@@ -10,43 +10,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        tools:context=".ui.ajout.AjoutEtudiantFragment">
+        tools:context=".ui.detail.DetailEtudiantFragment">
 
         <TextView
-            android:id="@+id/title_form"
+            android:id="@+id/title_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Formulaire d'Ajout Étudiant"
+            android:text="Détails de l'Étudiant"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_layout_cin"
+        <!-- Le CIN n'est pas modifiable -->
+        <TextView
+            android:id="@+id/textViewCin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@id/title_form"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/title_detail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextCin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="CIN"
-                android:inputType="number" />
-        </com.google.android.material.textfield.TextInputLayout>
+            tools:text="CIN : 12345678" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/input_layout_nom"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/input_layout_cin"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/textViewCin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -55,8 +49,7 @@
                 android:id="@+id/editTextNom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nom"
-                android:inputType="textCapWords" />
+                android:hint="Nom" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -73,8 +66,7 @@
                 android:id="@+id/editTextPrenom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Prénom"
-                android:inputType="textCapWords" />
+                android:hint="Prénom" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -91,27 +83,7 @@
                 android:id="@+id/editTextMail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Mail"
-                android:inputType="textEmailAddress" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_layout_password"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/input_layout_mail"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:passwordToggleEnabled="true"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Mot de passe"
-                android:inputType="textPassword" />
+                android:hint="Mail" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -119,7 +91,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/input_layout_password"
+            app:layout_constraintTop_toBottomOf="@id/input_layout_mail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -128,19 +100,35 @@
                 android:id="@+id/editTextClasse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Classe"
-                android:inputType="textCapCharacters" />
+                android:hint="Classe" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/boutonAjouter"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Ajouter l'Étudiant"
+            android:orientation="horizontal"
             android:layout_marginTop="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/input_layout_classe"
+            app:layout_constraintTop_toBottomOf="@id/input_layout_classe"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <Button
+                android:id="@+id/boutonUpdate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mettre à jour"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/boutonDelete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Supprimer"
+                android:backgroundTint="@android:color/holo_red_dark"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,52 +1,50 @@
 package com.isetr.menufragapp
 
 import android.os.Bundle
-import android.view.Menu
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.navigation.NavigationView
+import com.isetr.menufragapp.data.EtudiantRepository
 import com.isetr.menufragapp.databinding.ActivityMainBinding
+import com.isetr.menufragapp.reseau.RetrofitInstance
+import com.isetr.menufragapp.viewModel.EtudiantViewModel
+import com.isetr.menufragapp.viewModel.EtudiantViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
+    lateinit var etudiantViewModel: EtudiantViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val repository = EtudiantRepository(RetrofitInstance.api)
+        val factory = EtudiantViewModelFactory(repository)
+        etudiantViewModel = ViewModelProvider(this, factory).get(EtudiantViewModel::class.java)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.appBarMain.toolbar)
 
-        binding.appBarMain.fab.setOnClickListener {
-            Snackbar.make(it, "Replace with your own action", Snackbar.LENGTH_LONG)
-        }
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_ajout_etudiant, R.id.nav_liste_etudiants
-            ), drawerLayout
+            setOf(R.id.nav_home, R.id.nav_liste_etudiants, R.id.nav_ajout_etudiant),
+            drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
-        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {

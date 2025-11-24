@@ -3,31 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@id/nav_home">
 
     <fragment
         android:id="@+id/nav_home"
         android:name="com.isetr.menufragapp.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="Accueil"
         tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/nav_ajout_etudiant"
-        android:name="com.isetr.menufragapp.ui.ajout.AjoutEtudiantFragment"
-        android:label="@string/menu_ajout"
-        tools:layout="@layout/fragment_ajout_etudiant" >
-        <action
-            android:id="@+id/action_nav_ajout_etudiant_to_nav_liste_etudiants"
-            app:destination="@id/nav_liste_etudiants" />
-    </fragment>
 
     <fragment
         android:id="@+id/nav_liste_etudiants"
         android:name="com.isetr.menufragapp.ui.liste.ListeEtudiantsFragment"
-        android:label="@string/menu_liste"
+        android:label="Liste des Étudiants"
         tools:layout="@layout/fragment_liste_etudiants" >
+        <!-- Action pour naviguer de la liste vers les détails -->
+        <action
+            android:id="@+id/action_liste_to_detail"
+            app:destination="@id/nav_detail_etudiant" />
     </fragment>
 
+    <fragment
+        android:id="@+id/nav_ajout_etudiant"
+        android:name="com.isetr.menufragapp.ui.ajout.AjoutEtudiantFragment"
+        android:label="Ajouter un Étudiant"
+        tools:layout="@layout/fragment_ajout_etudiant" />
 
-    
+    <!-- Nouveau fragment de détails -->
+    <fragment
+        android:id="@+id/nav_detail_etudiant"
+        android:name="com.isetr.menufragapp.ui.detail.DetailEtudiantFragment"
+        android:label="Détails de l'Étudiant"
+        tools:layout="@layout/fragment_detail_etudiant" />
+
 </navigation>

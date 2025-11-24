@@ -3,29 +3,99 @@ package com.isetr.menufragapp.viewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.isetr.menufragapp.data.Etudiant
-class EtudiantViewModel : ViewModel() {
-    // Utilisation de MutableLiveData pour que la liste soit observable et modifiable
-    private val _etudiants = MutableLiveData<MutableList<Etudiant>>()
-    val etudiants: LiveData<MutableList<Etudiant>> = _etudiants
+import com.isetr.menufragapp.data.EtudiantRepository
+import kotlinx.coroutines.launch
 
-    val etudiantSelectionne = MutableLiveData<Etudiant?>()
+class EtudiantViewModel(private val repository: EtudiantRepository) : ViewModel() {
 
-    init { // Initialisation de la liste (ou chargement depuis une source)
-        _etudiants.value = mutableListOf(
-            Etudiant("101", "M1 Info", "ali@isetr.tn"),
-            Etudiant("102", "M2 Info", "amel@isetr.tn"),
-            // ... autres étudiants
-        ) }
-    // Fonction pour ajouter un étudiant.
-    // Notifie automatiquement les Observateurs (comme le Fragment Liste).
-    fun addEtudiant(etudiant: Etudiant) {
-        val currentList = _etudiants.value ?: mutableListOf()
-        currentList.add(etudiant)
-        _etudiants.value = currentList // Met à jour le LiveData
+    private val _etudiants = MutableLiveData<List<Etudiant>?>()
+    val etudiants: LiveData<List<Etudiant>?> = _etudiants
+
+    private val _etudiantSelectionne = MutableLiveData<Etudiant?>()
+    val etudiantSelectionne: LiveData<Etudiant?> = _etudiantSelectionne
+
+    private val _updateResult = MutableLiveData<Boolean?>()
+    val updateResult: LiveData<Boolean?> = _updateResult
+
+    private val _deleteResult = MutableLiveData<Boolean?>()
+    val deleteResult: LiveData<Boolean?> = _deleteResult
+
+    private val _addResult = MutableLiveData<Etudiant?>()
+    val addResult: LiveData<Etudiant?> = _addResult
+
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?> = _errorMessage
+
+    init {
+        loadEtudiants()
+    }
+
+    fun loadEtudiants() {
+        viewModelScope.launch {
+            try {
+                val response = repository.getEtudiants()
+                _etudiants.postValue(if (response.isSuccessful) response.body() else null)
+            } catch (e: Exception) {
+                _errorMessage.postValue("Erreur réseau: ${e.message}")
+            }
+        }
+    }
+
+    fun addNewEtudiant(etudiant: Etudiant) {
+        viewModelScope.launch {
+            try {
+                val response = repository.addEtudiant(etudiant)
+                if (response.isSuccessful) {
+                    _addResult.postValue(response.body())
+                    loadEtudiants()
+                } else {
+                    _errorMessage.postValue("Erreur d\'ajout: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                _errorMessage.postValue("Erreur réseau: ${e.message}")
+            }
+        }
+    }
+
+    fun updateEtudiant(etudiant: Etudiant) {
+        viewModelScope.launch {
+            try {
+                val response = repository.updateEtudiant(etudiant)
+                _updateResult.postValue(response.isSuccessful)
+                if (response.isSuccessful) {
+                    loadEtudiants()
+                }
+            } catch (e: Exception) {
+                _updateResult.postValue(false)
+                _errorMessage.postValue("Erreur réseau: ${e.message}")
+            }
+        }
+    }
+
+    fun deleteEtudiant() {
+        _etudiantSelectionne.value?.let { etudiant ->
+            viewModelScope.launch {
+                try {
+                    val response = repository.deleteEtudiant(etudiant.cin)
+                    _deleteResult.postValue(response.isSuccessful)
+                    if (response.isSuccessful) {
+                        loadEtudiants()
+                    }
+                } catch (e: Exception) {
+                    _deleteResult.postValue(false)
+                    _errorMessage.postValue("Erreur réseau: ${e.message}")
+                }
+            }
+        }
     }
 
     fun selectionnerEtudiant(etudiant: Etudiant) {
-        etudiantSelectionne.value = etudiant // Notifie le DetailEtudiantFragment
+        _etudiantSelectionne.postValue(etudiant)
     }
+
+    // Les fonctions de consommation mettent maintenant la valeur à null
+    fun onUpdateResultConsumed() { _updateResult.value = null }
+    fun onDeleteResultConsumed() { _deleteResult.value = null }
 }

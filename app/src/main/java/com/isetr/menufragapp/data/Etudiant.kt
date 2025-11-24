@@ -1,11 +1,15 @@
 package com.isetr.menufragapp.data
 
-/**
- * Modèle de données pour un étudiant.
- * Utilise 'data class' pour obtenir automatiquement des méthodes utiles comme equals() et copy().
- */
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "etudiants")
 data class Etudiant(
-    val identifiant: String,
-    val classe: String,
-    val email: String
+    @PrimaryKey
+    val cin: Int,
+    val nom: String,
+    val prenom: String,
+    val mail: String,
+    val password: String,
+    val classe: String
 )

@@ -6,37 +6,34 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.isetr.menufragapp.databinding.FragmentHomeBinding
 import com.isetr.menufragapp.viewModel.EtudiantViewModel
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+
+    private val etudiantViewModel: EtudiantViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val etudiantViewModel =
-            ViewModelProvider(this).get(EtudiantViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textHome
-        textView.text = "Bienvenue Home Fragment"
-        //etudiantViewModel.text.observe(viewLifecycleOwner) {
-          //  textView.text = it }
+
+        etudiantViewModel.etudiants.observe(viewLifecycleOwner) { etudiantsList ->
+            val count = etudiantsList?.size ?: 0
+            textView.text = "Bienvenue Home Fragment"
+        }
+
         return root
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
